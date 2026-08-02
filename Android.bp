@@ -1,0 +1,39 @@
+license {
+    name: "legacydroid-GPL-3.0",
+    package_name: "legacydroid",
+    license_kinds: ["SPDX-license-identifier-GPL-3.0"],
+    license_text: ["LICENSE"],
+}
+
+package {
+    default_applicable_licenses: ["legacydroid-GPL-3.0"],
+}
+
+// Termux boot integration: mirror the Magisk app install pattern from
+// vendor/aosproot. The APK ships in /system/etc/termux and is
+// pm-installed as a regular (non-system) user app once PackageManager is
+// up, so the Magisk superuser grant flow works normally for it.
+prebuilt_etc {
+    name: "termux_apk",
+    src: "termux.apk",
+    filename: "termux.apk",
+    sub_dir: "termux",
+}
+
+prebuilt_etc {
+    name: "termux_setup_sh",
+    src: "termux_setup.sh",
+    filename: "termux_setup.sh",
+    sub_dir: "termux",
+}
+
+// Installed to /product/etc/init on purpose: the sys.boot_completed action
+// must run after PackageManager is up (same ordering rationale as the
+// Magisk app install in vendor/aosproot).
+prebuilt_etc {
+    name: "termux_setup_rc",
+    src: "termux_setup.rc",
+    filename: "termux_setup.rc",
+    sub_dir: "init",
+    product_specific: true,
+}

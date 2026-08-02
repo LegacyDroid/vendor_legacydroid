@@ -1,0 +1,6 @@
+# Install Termux as a user app once PackageManager is up. Mirrors the
+# Magisk app install in vendor/aosproot (magisk_setup.rc); seclabel
+# u:r:magisk:s0 is required since /system/bin/sh has no domain transition
+# from init.
+on property:sys.boot_completed=1
+    exec u:r:magisk:s0 0 0 -- /system/bin/sh /system/etc/termux/termux_setup.sh install
