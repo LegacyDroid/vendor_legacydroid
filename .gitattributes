@@ -1,1 +1,9 @@
 termux.apk filter=lfs diff=lfs merge=lfs -text
+realsr/**/*.so filter=lfs diff=lfs merge=lfs -text
+realsr/**/Anime4k filter=lfs diff=lfs merge=lfs -text
+realsr/**/realsr-ncnn filter=lfs diff=lfs merge=lfs -text
+realsr/**/realcugan-ncnn filter=lfs diff=lfs merge=lfs -text
+realsr/**/resize-ncnn filter=lfs diff=lfs merge=lfs -text
+realsr/**/srmd-ncnn filter=lfs diff=lfs merge=lfs -text
+realsr/**/waifu2x-ncnn filter=lfs diff=lfs merge=lfs -text
+realsr/models-*/x4.bin filter=lfs diff=lfs merge=lfs -text

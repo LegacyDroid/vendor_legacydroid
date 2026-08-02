@@ -37,3 +37,110 @@ prebuilt_etc {
     sub_dir: "init",
     product_specific: true,
 }
+
+// RealSR CLI prebuilts (ncnn Vulkan, built with NDK r29 from
+// LegacyDroid/RealSR-NCNN-Android). Per-arch srcs: Soong picks the
+// x86_64 binary for x86_64 targets and the arm64 one for arm64 targets,
+// so one mka serves both the emulator and the Exynos phone.
+cc_prebuilt_binary {
+    name: "realsr-ncnn",
+    srcs: ["realsr/x86_64/realsr-ncnn"],
+    arch: {
+        arm64: {
+            srcs: ["realsr/arm64-v8a/realsr-ncnn"],
+        },
+    },
+    check_elf_files: false,
+}
+
+cc_prebuilt_binary {
+    name: "realcugan-ncnn",
+    srcs: ["realsr/x86_64/realcugan-ncnn"],
+    arch: {
+        arm64: {
+            srcs: ["realsr/arm64-v8a/realcugan-ncnn"],
+        },
+    },
+    check_elf_files: false,
+}
+
+cc_prebuilt_binary {
+    name: "resize-ncnn",
+    srcs: ["realsr/x86_64/resize-ncnn"],
+    arch: {
+        arm64: {
+            srcs: ["realsr/arm64-v8a/resize-ncnn"],
+        },
+    },
+    check_elf_files: false,
+}
+
+cc_prebuilt_binary {
+    name: "srmd-ncnn",
+    srcs: ["realsr/x86_64/srmd-ncnn"],
+    arch: {
+        arm64: {
+            srcs: ["realsr/arm64-v8a/srmd-ncnn"],
+        },
+    },
+    check_elf_files: false,
+}
+
+cc_prebuilt_binary {
+    name: "waifu2x-ncnn",
+    srcs: ["realsr/x86_64/waifu2x-ncnn"],
+    arch: {
+        arm64: {
+            srcs: ["realsr/arm64-v8a/waifu2x-ncnn"],
+        },
+    },
+    check_elf_files: false,
+}
+
+cc_prebuilt_binary {
+    name: "anime4k-ncnn",
+    srcs: ["realsr/x86_64/Anime4k"],
+    arch: {
+        arm64: {
+            srcs: ["realsr/arm64-v8a/Anime4k"],
+        },
+    },
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "ncnn",
+    srcs: ["realsr/x86_64/libncnn.so"],
+    arch: {
+        arm64: {
+            srcs: ["realsr/arm64-v8a/libncnn.so"],
+        },
+    },
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "omp",
+    srcs: ["realsr/x86_64/libomp.so"],
+    arch: {
+        arm64: {
+            srcs: ["realsr/arm64-v8a/libomp.so"],
+        },
+    },
+    check_elf_files: false,
+}
+
+// Only models-RealeSR-general-v3 ships; other models can be added later.
+prebuilt_etc {
+    name: "realsr_model_general_v3_param",
+    src: "realsr/models-RealeSR-general-v3/x4.param",
+    filename: "x4.param",
+    sub_dir: "realsr/models-RealeSR-general-v3",
+}
+
+prebuilt_etc {
+    name: "realsr_model_general_v3_bin",
+    src: "realsr/models-RealeSR-general-v3/x4.bin",
+    filename: "x4.bin",
+    sub_dir: "realsr/models-RealeSR-general-v3",
+}
