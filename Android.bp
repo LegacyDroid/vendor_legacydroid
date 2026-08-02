@@ -109,7 +109,7 @@ cc_prebuilt_binary {
 }
 
 cc_prebuilt_library_shared {
-    name: "ncnn",
+    name: "libncnn",
     srcs: ["realsr/x86_64/libncnn.so"],
     arch: {
         arm64: {
@@ -120,7 +120,7 @@ cc_prebuilt_library_shared {
 }
 
 cc_prebuilt_library_shared {
-    name: "omp",
+    name: "libomp",
     srcs: ["realsr/x86_64/libomp.so"],
     arch: {
         arm64: {

@@ -6,4 +6,12 @@ PRODUCT_ARTIFACT_PATH_REQUIREMENT_ALLOWED_LIST += \
     system/etc/termux/termux_setup.sh \
     product/etc/init/termux_setup.rc \
     system/etc/realsr/models-RealeSR-general-v3/x4.param \
-    system/etc/realsr/models-RealeSR-general-v3/x4.bin
+    system/etc/realsr/models-RealeSR-general-v3/x4.bin \
+    system/bin/realsr-ncnn \
+    system/bin/realcugan-ncnn \
+    system/bin/resize-ncnn \
+    system/bin/srmd-ncnn \
+    system/bin/waifu2x-ncnn \
+    system/bin/anime4k-ncnn \
+    system/lib64/libncnn.so \
+    system/lib64/libomp.so
