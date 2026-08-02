@@ -120,7 +120,11 @@ cc_prebuilt_library_shared {
 }
 
 cc_prebuilt_library_shared {
-    name: "libomp",
+    name: "legacydroid_libomp",
+    // stem keeps the installed file /system/lib64/libomp.so (matches the
+    // CLIs' DT_NEEDED); the module name is unique because clang's
+    // llvm_prebuilt_library_static "libomp" already owns "prebuilt_libomp".
+    stem: "libomp",
     srcs: ["realsr/x86_64/libomp.so"],
     arch: {
         arm64: {
