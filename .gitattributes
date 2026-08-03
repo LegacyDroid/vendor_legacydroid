@@ -1,3 +1,4 @@
+simpmusic.apk filter=lfs diff=lfs merge=lfs -text
 termux.apk filter=lfs diff=lfs merge=lfs -text
 realsr/**/*.so filter=lfs diff=lfs merge=lfs -text
 realsr/**/Anime4k filter=lfs diff=lfs merge=lfs -text

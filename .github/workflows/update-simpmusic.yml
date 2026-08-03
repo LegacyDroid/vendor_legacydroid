@@ -1,0 +1,54 @@
+name: Update SimpMusic
+
+on:
+  schedule:
+    - cron: "0 3 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Get latest release tag
+        id: release
+        run: |
+          TAG="$(curl -fsS https://api.github.com/repos/maxrave-dev/SimpMusic/releases/latest \
+            | grep -o '"tag_name": *"[^"]*"' | head -1 | sed 's/.*"\(.*\)"/\1/')"
+          echo "tag=${TAG}" >> "${GITHUB_OUTPUT}"
+          echo "Latest SimpMusic release: ${TAG}"
+
+      - name: Compare with checked-in version
+        id: compare
+        run: |
+          CURRENT="$(grep -o '"tag": *"[^"]*"' vendor/legacydroid/simpmusic_version.json \
+            | sed 's/.*"\(.*\)"/\1/')"
+          echo "Checked-in version: ${CURRENT}"
+          if [ -z "${CURRENT}" ]; then
+            echo "stale=true" >> "${GITHUB_OUTPUT}"
+          elif printf '%s\n%s\n' "${CURRENT}" "${{ steps.release.outputs.tag }}" \
+              | sort -V | tail -1 | grep -qx "${{ steps.release.outputs.tag }}"; then
+            echo "stale=true" >> "${GITHUB_OUTPUT}"
+          else
+            echo "stale=false" >> "${GITHUB_OUTPUT}"
+          fi
+
+      - name: Download and commit newer APK
+        if: steps.compare.outputs.stale == 'true'
+        env:
+          TAG: ${{ steps.release.outputs.tag }}
+        run: |
+          curl -fL --retry 3 -o vendor/legacydroid/simpmusic.apk \
+            "https://github.com/maxrave-dev/SimpMusic/releases/latest/download/SimpMusic-foss-universal-release.apk"
+          printf '{"tag": "%s"}\n' "${TAG}" > vendor/legacydroid/simpmusic_version.json
+          git config user.name "LegacyDroid Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add vendor/legacydroid/simpmusic.apk vendor/legacydroid/simpmusic_version.json
+          git commit -m "simpmusic: bump to ${TAG}"
+          git push

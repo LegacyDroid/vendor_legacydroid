@@ -38,10 +38,17 @@ prebuilt_etc {
     product_specific: true,
 }
 
-// SimpMusic boot integration: same pattern as Termux. The APK itself is
-// NOT checked in (rolling release) - it is downloaded at build time by
-// Android.mk (simpmusic_fetch.sh) into $(PRODUCT_OUT) and installed to
-// /system/etc/simpmusic as module simpmusic_apk.
+// SimpMusic boot integration: same pattern as Termux. The APK is tracked
+// via Git LFS and kept current by .github/workflows/update-simpmusic.yml,
+// which checks the upstream release and replaces it when a newer tag
+// appears (simpmusic_version.json records the checked-in tag).
+prebuilt_etc {
+    name: "simpmusic_apk",
+    src: "simpmusic.apk",
+    filename: "simpmusic.apk",
+    sub_dir: "simpmusic",
+}
+
 prebuilt_etc {
     name: "simpmusic_setup_sh",
     src: "simpmusic_setup.sh",
