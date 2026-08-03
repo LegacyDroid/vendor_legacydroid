@@ -27,13 +27,14 @@ jobs:
       - name: Compare with checked-in version
         id: compare
         run: |
-          CURRENT="$(grep -o '"tag": *"[^"]*"' vendor/legacydroid/simpmusic_version.json \
+          CURRENT="$(grep -o '"tag": *"[^"]*"' simpmusic_version.json \
             | sed 's/.*"\(.*\)"/\1/')"
+          NEWEST="${{ steps.release.outputs.tag }}"
           echo "Checked-in version: ${CURRENT}"
           if [ -z "${CURRENT}" ]; then
             echo "stale=true" >> "${GITHUB_OUTPUT}"
-          elif printf '%s\n%s\n' "${CURRENT}" "${{ steps.release.outputs.tag }}" \
-              | sort -V | tail -1 | grep -qx "${{ steps.release.outputs.tag }}"; then
+          elif [ "${CURRENT}" != "${NEWEST}" ] \
+              && [ "$(printf '%s\n%s\n' "${CURRENT}" "${NEWEST}" | sort -V | tail -1)" = "${NEWEST}" ]; then
             echo "stale=true" >> "${GITHUB_OUTPUT}"
           else
             echo "stale=false" >> "${GITHUB_OUTPUT}"
@@ -44,11 +45,11 @@ jobs:
         env:
           TAG: ${{ steps.release.outputs.tag }}
         run: |
-          curl -fL --retry 3 -o vendor/legacydroid/simpmusic.apk \
+          curl -fL --retry 3 -o simpmusic.apk \
             "https://github.com/maxrave-dev/SimpMusic/releases/latest/download/SimpMusic-foss-universal-release.apk"
-          printf '{"tag": "%s"}\n' "${TAG}" > vendor/legacydroid/simpmusic_version.json
+          printf '{"tag": "%s"}\n' "${TAG}" > simpmusic_version.json
           git config user.name "LegacyDroid Bot"
           git config user.email "actions@users.noreply.github.com"
-          git add vendor/legacydroid/simpmusic.apk vendor/legacydroid/simpmusic_version.json
+          git add simpmusic.apk simpmusic_version.json
           git commit -m "simpmusic: bump to ${TAG}"
           git push
