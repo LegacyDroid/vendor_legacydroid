@@ -5,6 +5,9 @@ PRODUCT_ARTIFACT_PATH_REQUIREMENT_ALLOWED_LIST += \
     system/etc/termux/termux.apk \
     system/etc/termux/termux_setup.sh \
     product/etc/init/termux_setup.rc \
+    system/etc/simpmusic/simpmusic.apk \
+    system/etc/simpmusic/simpmusic_setup.sh \
+    product/etc/init/simpmusic_setup.rc \
     system/etc/realsr/models-RealeSR-general-v3/x4.param \
     system/etc/realsr/models-RealeSR-general-v3/x4.bin \
     system/bin/realsr-ncnn \

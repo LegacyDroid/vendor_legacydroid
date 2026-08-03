@@ -38,6 +38,27 @@ prebuilt_etc {
     product_specific: true,
 }
 
+// SimpMusic boot integration: same pattern as Termux. The APK itself is
+// NOT checked in (rolling release) - it is downloaded at build time by
+// Android.mk (simpmusic_fetch.sh) into $(PRODUCT_OUT) and installed to
+// /system/etc/simpmusic as module simpmusic_apk.
+prebuilt_etc {
+    name: "simpmusic_setup_sh",
+    src: "simpmusic_setup.sh",
+    filename: "simpmusic_setup.sh",
+    sub_dir: "simpmusic",
+}
+
+// Installed to /product/etc/init: the sys.boot_completed action must run
+// after PackageManager is up (same ordering as the Magisk/Termux installs).
+prebuilt_etc {
+    name: "simpmusic_setup_rc",
+    src: "simpmusic_setup.rc",
+    filename: "simpmusic_setup.rc",
+    sub_dir: "init",
+    product_specific: true,
+}
+
 // RealSR CLI prebuilts (ncnn Vulkan, built with NDK r29 from
 // LegacyDroid/RealSR-NCNN-Android). Per-arch srcs: Soong picks the
 // x86_64 binary for x86_64 targets and the arm64 one for arm64 targets,

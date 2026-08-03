@@ -1,0 +1,6 @@
+# Install SimpMusic as a user app once PackageManager is up. Mirrors the
+# Termux install in vendor/legacydroid (termux_setup.rc); seclabel
+# u:r:magisk:s0 is required since /system/bin/sh has no domain transition
+# from init.
+on property:sys.boot_completed=1
+    exec u:r:magisk:s0 0 0 -- /system/bin/sh /system/etc/simpmusic/simpmusic_setup.sh install
