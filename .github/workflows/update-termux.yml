@@ -1,0 +1,62 @@
+name: Update Termux
+
+on:
+  schedule:
+    - cron: "0 4 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Get latest release tag and universal APK URL
+        id: release
+        run: |
+          curl -fsS https://api.github.com/repos/termux/termux-app/releases/latest \
+            > /tmp/termux-release.json
+          TAG="$(grep -o '"tag_name": *"[^"]*"' /tmp/termux-release.json | head -1 | sed 's/.*"\(.*\)"/\1/')"
+          URL="$(python3 -c "
+import json
+d = json.load(open('/tmp/termux-release.json'))
+print(next(a['browser_download_url'] for a in d['assets'] if 'universal' in a['name']))
+")"
+          echo "tag=${TAG}" >> "${GITHUB_OUTPUT}"
+          echo "url=${URL}" >> "${GITHUB_OUTPUT}"
+          echo "Latest Termux release: ${TAG}"
+
+      - name: Compare with checked-in version
+        id: compare
+        run: |
+          CURRENT="$(grep -o '"tag": *"[^"]*"' termux_version.json \
+            | sed 's/.*"\(.*\)"/\1/')"
+          NEWEST="${{ steps.release.outputs.tag }}"
+          echo "Checked-in version: ${CURRENT}"
+          if [ -z "${CURRENT}" ]; then
+            echo "stale=true" >> "${GITHUB_OUTPUT}"
+          elif [ "${CURRENT}" != "${NEWEST}" ] \
+              && [ "$(printf '%s\n%s\n' "${CURRENT}" "${NEWEST}" | sort -V | tail -1)" = "${NEWEST}" ]; then
+            echo "stale=true" >> "${GITHUB_OUTPUT}"
+          else
+            echo "stale=false" >> "${GITHUB_OUTPUT}"
+          fi
+
+      - name: Download and commit newer APK
+        if: steps.compare.outputs.stale == 'true'
+        env:
+          TAG: ${{ steps.release.outputs.tag }}
+          URL: ${{ steps.release.outputs.url }}
+        run: |
+          curl -fL --retry 3 -o termux.apk "${URL}"
+          printf '{"tag": "%s"}\n' "${TAG}" > termux_version.json
+          git config user.name "LegacyDroid Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add termux.apk termux_version.json
+          git commit -m "termux: bump to ${TAG}"
+          git push
