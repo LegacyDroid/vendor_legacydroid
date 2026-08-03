@@ -22,11 +22,7 @@ jobs:
           curl -fsS https://api.github.com/repos/termux/termux-app/releases/latest \
             > /tmp/termux-release.json
           TAG="$(grep -o '"tag_name": *"[^"]*"' /tmp/termux-release.json | head -1 | sed 's/.*"\(.*\)"/\1/')"
-          URL="$(python3 -c "
-import json
-d = json.load(open('/tmp/termux-release.json'))
-print(next(a['browser_download_url'] for a in d['assets'] if 'universal' in a['name']))
-")"
+          URL="$(grep -o '"browser_download_url": *"[^"]*universal[^"]*"' /tmp/termux-release.json | head -1 | sed 's/.*"\(.*\)"/\1/')"
           echo "tag=${TAG}" >> "${GITHUB_OUTPUT}"
           echo "url=${URL}" >> "${GITHUB_OUTPUT}"
           echo "Latest Termux release: ${TAG}"
