@@ -1,5 +1,5 @@
 #!/system/bin/sh
-# LegacyDroid SimpMusic boot install (run from simpmusic_setup.rc as u:r:magisk:s0)
+# LegacyDroid SimpMusic boot install (run from simpmusic_setup.rc as u:r:shell:s0)
 case "$1" in
 install)
     # Install SimpMusic as a regular user app once PackageManager is up,

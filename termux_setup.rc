@@ -1,6 +1,9 @@
 # Install Termux as a user app once PackageManager is up. Mirrors the
-# Magisk app install in vendor/aosproot (magisk_setup.rc); seclabel
-# u:r:magisk:s0 is required since /system/bin/sh has no domain transition
-# from init.
+# Magisk app install in vendor/aosproot (magisk_setup.rc), but runs in the
+# stock shell domain instead of magisk: on Treble/GSI builds aosproot root
+# injection is skipped (no kernel, no boot image), so no u:r:magisk:s0
+# domain exists there and the old exec failed on every boot, leaving the
+# APK shipped but never installed. u:r:shell:s0 is the same context
+# `adb install` uses and can always pm-install.
 on property:sys.boot_completed=1
-    exec u:r:magisk:s0 0 0 -- /system/bin/sh /system/etc/termux/termux_setup.sh install
+    exec u:r:shell:s0 shell shell -- /system/bin/sh /system/etc/termux/termux_setup.sh install

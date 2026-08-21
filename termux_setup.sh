@@ -1,5 +1,5 @@
 #!/system/bin/sh
-# LegacyDroid Termux boot install (run from termux_setup.rc as u:r:magisk:s0)
+# LegacyDroid Termux boot install (run from termux_setup.rc as u:r:shell:s0)
 case "$1" in
 install)
     # Install Termux as a regular user app once PackageManager is up, so
